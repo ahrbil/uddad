@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+
+concurrently "cd client && yarn start" "cd server && yarn start"
+
+

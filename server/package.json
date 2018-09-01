@@ -7,20 +7,20 @@
   "scripts": {
     "start": "nodemon -e js,graphql -x node src/index.js",
     "deploy": "prisma deploy",
-    "playground": "graphql playground",
+    "playground": "graphql playground"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "graphql-yoga": "^1.16.1",
-    "prisma-binding": "^2.1.4"
+    "graphql-yoga": "^1.16.2",
+    "prisma-binding": "^2.1.5"
   },
   "devDependencies": {
     "dotenv": "^6.0.0",
     "eslint-plugin-security": "^1.4.0",
     "graphql-cli": "^2.16.5",
-    "nodemon": "^1.18.3",
-    "prisma": "^1.14.0"
+    "nodemon": "^1.18.4",
+    "prisma": "^1.15.1"
   }
 }
