@@ -1,5 +1,29 @@
 type User {
   id: ID! @unique
-  name: String!
-  age: Int!
+  googleId: String @unique
+  name: String
+  email: String @unique
+  password: String
+  address: String
+  phoneNumber: String
+  avatar: String
+  products: [Product!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Product {
+  id: ID! @unique
+  title: String!
+  price: Float!
+  postedBy: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isNew: Boolean
+  images: [ProductImg!]!
+}
+
+type ProductImg {
+  id: ID! @unique
+  imageURL: String!
 }

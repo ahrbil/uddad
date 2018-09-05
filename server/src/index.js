@@ -12,7 +12,7 @@ const server = new GraphQLServer({
   },
   resolvers: {
     Mutation,
-    Query
+    Query,
   },
   context: req => ({
     ...req,
