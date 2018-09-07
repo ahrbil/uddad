@@ -1,5 +1,5 @@
 # source: https://uddad-db-server.herokuapp.com/uddad-db/dev
-# timestamp: Wed Sep 05 2018 17:37:30 GMT+0000 (GMT)
+# timestamp: Fri Sep 07 2018 11:18:42 GMT+0000 (GMT)
 
 type AggregateProduct {
   count: Int!
@@ -638,6 +638,7 @@ type User implements Node {
   address: String
   phoneNumber: String
   avatar: String
+  isVerified: Boolean
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product!]
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -661,6 +662,7 @@ input UserCreateInput {
   address: String
   phoneNumber: String
   avatar: String
+  isVerified: Boolean
   products: ProductCreateManyWithoutPostedByInput
 }
 
@@ -677,6 +679,7 @@ input UserCreateWithoutProductsInput {
   address: String
   phoneNumber: String
   avatar: String
+  isVerified: Boolean
 }
 
 """An edge in a connection."""
@@ -705,6 +708,8 @@ enum UserOrderByInput {
   phoneNumber_DESC
   avatar_ASC
   avatar_DESC
+  isVerified_ASC
+  isVerified_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -720,6 +725,7 @@ type UserPreviousValues {
   address: String
   phoneNumber: String
   avatar: String
+  isVerified: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -771,6 +777,7 @@ input UserUpdateInput {
   address: String
   phoneNumber: String
   avatar: String
+  isVerified: Boolean
   products: ProductUpdateManyWithoutPostedByInput
 }
 
@@ -790,6 +797,7 @@ input UserUpdateWithoutProductsDataInput {
   address: String
   phoneNumber: String
   avatar: String
+  isVerified: Boolean
 }
 
 input UserUpsertWithoutProductsInput {
@@ -1126,6 +1134,10 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   avatar_not_ends_with: String
+  isVerified: Boolean
+
+  """All values that are not equal to given value."""
+  isVerified_not: Boolean
   createdAt: DateTime
 
   """All values that are not equal to given value."""

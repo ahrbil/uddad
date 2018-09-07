@@ -1,8 +1,0 @@
-{
-  "env": {
-    "node": true,
-    "es6": true
-  },
-  "plugins": ["security"],
-  "extends": ["plugin:security/recommended"]
-}
