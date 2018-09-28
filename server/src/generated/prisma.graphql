@@ -1,11 +1,11 @@
 # source: https://uddad-db-server.herokuapp.com/uddad-db/dev
-# timestamp: Fri Sep 07 2018 11:18:42 GMT+0000 (GMT)
+# timestamp: Sat Sep 15 2018 19:43:38 GMT+0000 (GMT)
 
 type AggregateProduct {
   count: Int!
 }
 
-type AggregateProductImg {
+type AggregateTag {
   count: Int!
 }
 
@@ -29,22 +29,22 @@ scalar Long
 type Mutation {
   createUser(data: UserCreateInput!): User!
   createProduct(data: ProductCreateInput!): Product!
-  createProductImg(data: ProductImgCreateInput!): ProductImg!
+  createTag(data: TagCreateInput!): Tag!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateProduct(data: ProductUpdateInput!, where: ProductWhereUniqueInput!): Product
-  updateProductImg(data: ProductImgUpdateInput!, where: ProductImgWhereUniqueInput!): ProductImg
+  updateTag(data: TagUpdateInput!, where: TagWhereUniqueInput!): Tag
   deleteUser(where: UserWhereUniqueInput!): User
   deleteProduct(where: ProductWhereUniqueInput!): Product
-  deleteProductImg(where: ProductImgWhereUniqueInput!): ProductImg
+  deleteTag(where: TagWhereUniqueInput!): Tag
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertProduct(where: ProductWhereUniqueInput!, create: ProductCreateInput!, update: ProductUpdateInput!): Product!
-  upsertProductImg(where: ProductImgWhereUniqueInput!, create: ProductImgCreateInput!, update: ProductImgUpdateInput!): ProductImg!
+  upsertTag(where: TagWhereUniqueInput!, create: TagCreateInput!, update: TagUpdateInput!): Tag!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
   updateManyProducts(data: ProductUpdateInput!, where: ProductWhereInput): BatchPayload!
-  updateManyProductImgs(data: ProductImgUpdateInput!, where: ProductImgWhereInput): BatchPayload!
+  updateManyTags(data: TagUpdateInput!, where: TagWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyProducts(where: ProductWhereInput): BatchPayload!
-  deleteManyProductImgs(where: ProductImgWhereInput): BatchPayload!
+  deleteManyTags(where: TagWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -82,7 +82,8 @@ type Product implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   isNew: Boolean
-  images(where: ProductImgWhereInput, orderBy: ProductImgOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductImg!]
+  images: [String!]!
+  tags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
 }
 
 """A connection to a list of items."""
@@ -95,12 +96,17 @@ type ProductConnection {
   aggregate: AggregateProduct!
 }
 
+input ProductCreateimagesInput {
+  set: [String!]
+}
+
 input ProductCreateInput {
   title: String!
   price: Float!
   isNew: Boolean
+  images: ProductCreateimagesInput
   postedBy: UserCreateOneWithoutProductsInput!
-  images: ProductImgCreateManyInput
+  tags: TagCreateManyInput
 }
 
 input ProductCreateManyWithoutPostedByInput {
@@ -112,7 +118,8 @@ input ProductCreateWithoutPostedByInput {
   title: String!
   price: Float!
   isNew: Boolean
-  images: ProductImgCreateManyInput
+  images: ProductCreateimagesInput
+  tags: TagCreateManyInput
 }
 
 """An edge in a connection."""
@@ -122,220 +129,6 @@ type ProductEdge {
 
   """A cursor for use in pagination."""
   cursor: String!
-}
-
-type ProductImg implements Node {
-  id: ID!
-  imageURL: String!
-}
-
-"""A connection to a list of items."""
-type ProductImgConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [ProductImgEdge]!
-  aggregate: AggregateProductImg!
-}
-
-input ProductImgCreateInput {
-  imageURL: String!
-}
-
-input ProductImgCreateManyInput {
-  create: [ProductImgCreateInput!]
-  connect: [ProductImgWhereUniqueInput!]
-}
-
-"""An edge in a connection."""
-type ProductImgEdge {
-  """The item at the end of the edge."""
-  node: ProductImg!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum ProductImgOrderByInput {
-  id_ASC
-  id_DESC
-  imageURL_ASC
-  imageURL_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type ProductImgPreviousValues {
-  id: ID!
-  imageURL: String!
-}
-
-type ProductImgSubscriptionPayload {
-  mutation: MutationType!
-  node: ProductImg
-  updatedFields: [String!]
-  previousValues: ProductImgPreviousValues
-}
-
-input ProductImgSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductImgSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductImgSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductImgSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: ProductImgWhereInput
-}
-
-input ProductImgUpdateDataInput {
-  imageURL: String
-}
-
-input ProductImgUpdateInput {
-  imageURL: String
-}
-
-input ProductImgUpdateManyInput {
-  create: [ProductImgCreateInput!]
-  connect: [ProductImgWhereUniqueInput!]
-  disconnect: [ProductImgWhereUniqueInput!]
-  delete: [ProductImgWhereUniqueInput!]
-  update: [ProductImgUpdateWithWhereUniqueNestedInput!]
-  upsert: [ProductImgUpsertWithWhereUniqueNestedInput!]
-}
-
-input ProductImgUpdateWithWhereUniqueNestedInput {
-  where: ProductImgWhereUniqueInput!
-  data: ProductImgUpdateDataInput!
-}
-
-input ProductImgUpsertWithWhereUniqueNestedInput {
-  where: ProductImgWhereUniqueInput!
-  update: ProductImgUpdateDataInput!
-  create: ProductImgCreateInput!
-}
-
-input ProductImgWhereInput {
-  """Logical AND on all given filters."""
-  AND: [ProductImgWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [ProductImgWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [ProductImgWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  imageURL: String
-
-  """All values that are not equal to given value."""
-  imageURL_not: String
-
-  """All values that are contained in given list."""
-  imageURL_in: [String!]
-
-  """All values that are not contained in given list."""
-  imageURL_not_in: [String!]
-
-  """All values less than the given value."""
-  imageURL_lt: String
-
-  """All values less than or equal the given value."""
-  imageURL_lte: String
-
-  """All values greater than the given value."""
-  imageURL_gt: String
-
-  """All values greater than or equal the given value."""
-  imageURL_gte: String
-
-  """All values containing the given string."""
-  imageURL_contains: String
-
-  """All values not containing the given string."""
-  imageURL_not_contains: String
-
-  """All values starting with the given string."""
-  imageURL_starts_with: String
-
-  """All values not starting with the given string."""
-  imageURL_not_starts_with: String
-
-  """All values ending with the given string."""
-  imageURL_ends_with: String
-
-  """All values not ending with the given string."""
-  imageURL_not_ends_with: String
-  _MagicalBackRelation_ProductToProductImg_every: ProductWhereInput
-  _MagicalBackRelation_ProductToProductImg_some: ProductWhereInput
-  _MagicalBackRelation_ProductToProductImg_none: ProductWhereInput
-}
-
-input ProductImgWhereUniqueInput {
-  id: ID
 }
 
 enum ProductOrderByInput {
@@ -360,6 +153,7 @@ type ProductPreviousValues {
   createdAt: DateTime!
   updatedAt: DateTime!
   isNew: Boolean
+  images: [String!]!
 }
 
 type ProductSubscriptionPayload {
@@ -401,12 +195,17 @@ input ProductSubscriptionWhereInput {
   node: ProductWhereInput
 }
 
+input ProductUpdateimagesInput {
+  set: [String!]
+}
+
 input ProductUpdateInput {
   title: String
   price: Float
   isNew: Boolean
+  images: ProductUpdateimagesInput
   postedBy: UserUpdateOneWithoutProductsInput
-  images: ProductImgUpdateManyInput
+  tags: TagUpdateManyInput
 }
 
 input ProductUpdateManyWithoutPostedByInput {
@@ -422,7 +221,8 @@ input ProductUpdateWithoutPostedByDataInput {
   title: String
   price: Float
   isNew: Boolean
-  images: ProductImgUpdateManyInput
+  images: ProductUpdateimagesInput
+  tags: TagUpdateManyInput
 }
 
 input ProductUpdateWithWhereUniqueWithoutPostedByInput {
@@ -596,9 +396,9 @@ input ProductWhereInput {
   """All values that are not equal to given value."""
   isNew_not: Boolean
   postedBy: UserWhereInput
-  images_every: ProductImgWhereInput
-  images_some: ProductImgWhereInput
-  images_none: ProductImgWhereInput
+  tags_every: TagWhereInput
+  tags_some: TagWhereInput
+  tags_none: TagWhereInput
 }
 
 input ProductWhereUniqueInput {
@@ -608,13 +408,13 @@ input ProductWhereUniqueInput {
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product]!
-  productImgs(where: ProductImgWhereInput, orderBy: ProductImgOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ProductImg]!
+  tags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag]!
   user(where: UserWhereUniqueInput!): User
   product(where: ProductWhereUniqueInput!): Product
-  productImg(where: ProductImgWhereUniqueInput!): ProductImg
+  tag(where: TagWhereUniqueInput!): Tag
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   productsConnection(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
-  productImgsConnection(where: ProductImgWhereInput, orderBy: ProductImgOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProductImgConnection!
+  tagsConnection(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TagConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -626,17 +426,232 @@ type Query {
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   product(where: ProductSubscriptionWhereInput): ProductSubscriptionPayload
-  productImg(where: ProductImgSubscriptionWhereInput): ProductImgSubscriptionPayload
+  tag(where: TagSubscriptionWhereInput): TagSubscriptionPayload
+}
+
+type Tag implements Node {
+  id: ID!
+  name: String!
+}
+
+"""A connection to a list of items."""
+type TagConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TagEdge]!
+  aggregate: AggregateTag!
+}
+
+input TagCreateInput {
+  name: String!
+}
+
+input TagCreateManyInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
+"""An edge in a connection."""
+type TagEdge {
+  """The item at the end of the edge."""
+  node: Tag!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum TagOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type TagPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type TagSubscriptionPayload {
+  mutation: MutationType!
+  node: Tag
+  updatedFields: [String!]
+  previousValues: TagPreviousValues
+}
+
+input TagSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TagSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TagSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TagSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: TagWhereInput
+}
+
+input TagUpdateDataInput {
+  name: String
+}
+
+input TagUpdateInput {
+  name: String
+}
+
+input TagUpdateManyInput {
+  create: [TagCreateInput!]
+  connect: [TagWhereUniqueInput!]
+  disconnect: [TagWhereUniqueInput!]
+  delete: [TagWhereUniqueInput!]
+  update: [TagUpdateWithWhereUniqueNestedInput!]
+  upsert: [TagUpsertWithWhereUniqueNestedInput!]
+}
+
+input TagUpdateWithWhereUniqueNestedInput {
+  where: TagWhereUniqueInput!
+  data: TagUpdateDataInput!
+}
+
+input TagUpsertWithWhereUniqueNestedInput {
+  where: TagWhereUniqueInput!
+  update: TagUpdateDataInput!
+  create: TagCreateInput!
+}
+
+input TagWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TagWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TagWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TagWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  _MagicalBackRelation_ProductToTag_every: ProductWhereInput
+  _MagicalBackRelation_ProductToTag_some: ProductWhereInput
+  _MagicalBackRelation_ProductToTag_none: ProductWhereInput
+}
+
+input TagWhereUniqueInput {
+  id: ID
+  name: String
 }
 
 type User implements Node {
   id: ID!
   googleId: String
-  name: String
+  name: String!
   email: String
   password: String
   address: String
-  phoneNumber: String
+  phoneNumber: [String!]!
   avatar: String
   isVerified: Boolean
   products(where: ProductWhereInput, orderBy: ProductOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Product!]
@@ -656,13 +671,13 @@ type UserConnection {
 
 input UserCreateInput {
   googleId: String
-  name: String
+  name: String!
   email: String
   password: String
   address: String
-  phoneNumber: String
   avatar: String
   isVerified: Boolean
+  phoneNumber: UserCreatephoneNumberInput
   products: ProductCreateManyWithoutPostedByInput
 }
 
@@ -671,15 +686,19 @@ input UserCreateOneWithoutProductsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreatephoneNumberInput {
+  set: [String!]
+}
+
 input UserCreateWithoutProductsInput {
   googleId: String
-  name: String
+  name: String!
   email: String
   password: String
   address: String
-  phoneNumber: String
   avatar: String
   isVerified: Boolean
+  phoneNumber: UserCreatephoneNumberInput
 }
 
 """An edge in a connection."""
@@ -704,8 +723,6 @@ enum UserOrderByInput {
   password_DESC
   address_ASC
   address_DESC
-  phoneNumber_ASC
-  phoneNumber_DESC
   avatar_ASC
   avatar_DESC
   isVerified_ASC
@@ -719,11 +736,11 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   googleId: String
-  name: String
+  name: String!
   email: String
   password: String
   address: String
-  phoneNumber: String
+  phoneNumber: [String!]!
   avatar: String
   isVerified: Boolean
   createdAt: DateTime!
@@ -775,9 +792,9 @@ input UserUpdateInput {
   email: String
   password: String
   address: String
-  phoneNumber: String
   avatar: String
   isVerified: Boolean
+  phoneNumber: UserUpdatephoneNumberInput
   products: ProductUpdateManyWithoutPostedByInput
 }
 
@@ -789,15 +806,19 @@ input UserUpdateOneWithoutProductsInput {
   upsert: UserUpsertWithoutProductsInput
 }
 
+input UserUpdatephoneNumberInput {
+  set: [String!]
+}
+
 input UserUpdateWithoutProductsDataInput {
   googleId: String
   name: String
   email: String
   password: String
   address: String
-  phoneNumber: String
   avatar: String
   isVerified: Boolean
+  phoneNumber: UserUpdatephoneNumberInput
 }
 
 input UserUpsertWithoutProductsInput {
@@ -1054,46 +1075,6 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   address_not_ends_with: String
-  phoneNumber: String
-
-  """All values that are not equal to given value."""
-  phoneNumber_not: String
-
-  """All values that are contained in given list."""
-  phoneNumber_in: [String!]
-
-  """All values that are not contained in given list."""
-  phoneNumber_not_in: [String!]
-
-  """All values less than the given value."""
-  phoneNumber_lt: String
-
-  """All values less than or equal the given value."""
-  phoneNumber_lte: String
-
-  """All values greater than the given value."""
-  phoneNumber_gt: String
-
-  """All values greater than or equal the given value."""
-  phoneNumber_gte: String
-
-  """All values containing the given string."""
-  phoneNumber_contains: String
-
-  """All values not containing the given string."""
-  phoneNumber_not_contains: String
-
-  """All values starting with the given string."""
-  phoneNumber_starts_with: String
-
-  """All values not starting with the given string."""
-  phoneNumber_not_starts_with: String
-
-  """All values ending with the given string."""
-  phoneNumber_ends_with: String
-
-  """All values not ending with the given string."""
-  phoneNumber_not_ends_with: String
   avatar: String
 
   """All values that are not equal to given value."""
@@ -1190,5 +1171,6 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   id: ID
   googleId: String
+  name: String
   email: String
 }

@@ -1,13 +1,13 @@
 type User {
   id: ID! @unique
   googleId: String @unique
-  name: String
+  name: String! @unique
   email: String @unique
   password: String
   address: String
-  phoneNumber: String
+  phoneNumber: [String!]
   avatar: String
-  isVerified: Boolean
+  isVerified: Boolean @default(value: "false")
   products: [Product!]!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -21,10 +21,11 @@ type Product {
   createdAt: DateTime!
   updatedAt: DateTime!
   isNew: Boolean
-  images: [ProductImg!]!
+  images: [String!]!
+  tags: [Tag!]!
 }
 
-type ProductImg {
+type Tag {
   id: ID! @unique
-  imageURL: String!
+  name: String! @unique
 }
