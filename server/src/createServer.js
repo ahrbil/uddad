@@ -1,10 +1,11 @@
-const { GraphQLServer } = require('graphql-yoga');
+// const { GraphQLServer } = require('graphql-yoga');
+import { GraphQLServer } from "graphql-yoga";
 
-const db = require('./db');
-const getMergedSchemas = require('./utils/mergeSchemas');
+import db from "./db";
+import getMergedSchemas from "./utils/mergeSchemas";
 
-const createServer = () => {
-  return new GraphQLServer({
+const createServer = () =>
+  new GraphQLServer({
     // instead of importing resolvers and typedefs
     // we call getMergedSchemas() for getting an executable schema
     schema: getMergedSchemas(),
@@ -16,6 +17,4 @@ const createServer = () => {
       db
     })
   });
-};
-
-module.exports = createServer;
+export default createServer;

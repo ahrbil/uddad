@@ -1,9 +1,9 @@
-require('dotenv').config();
+import createServer from "./createServer";
 
-const createServer = require('./createServer');
+require("dotenv").config();
 
 const server = createServer();
 
 server.start(() =>
-  console.log(`🚀  👌  Server running on http://localhost:4000`)
+  console.log("🚀  👌  Server running on http://localhost:4000")
 );

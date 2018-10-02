@@ -1,10 +1,10 @@
-const { Prisma } = require('prisma-binding');
+import { Prisma } from "prisma-binding";
 
 const db = new Prisma({
-  typeDefs: 'src/generated/prisma.graphql',
-  endpoint: process.env.PRISMA_ENDPOINT,
+  typeDefs: "src/generated/prisma.graphql",
+  endpoint: "https://uddad-db-server.herokuapp.com/uddad-db/dev",
   secret: process.env.PRISMA_SECRET,
   debug: true
 });
 
-module.exports = db;
+export default db;
